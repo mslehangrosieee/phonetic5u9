@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ms. Lê Hằng English - Luyện Tập Phát Âm & Trọng Âm Mới</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif;
+            background-color: #0b1120;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- HỆ THỐNG NỀN CỰC QUANG BIẾN ĐỔI SẮC CẦU VỒNG --- */
+        .aurora-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            animation: hueRotateAnimation 20s linear infinite;
+        }
+        @keyframes hueRotateAnimation {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        .blob {
+            position: absolute;
+            width: 1000px; height: 1000px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.5;
+            mix-blend-mode: screen;
+        }
+        .blob-1 { background: radial-gradient(circle, #ff2e93 0%, transparent 65%); top: -20%; left: -10%; animation: moveBlob1 25s infinite alternate ease-in-out; }
+        .blob-2 { background: radial-gradient(circle, #00f0ff 0%, transparent 65%); bottom: -20%; right: -10%; animation: moveBlob2 22s infinite alternate ease-in-out; }
+        .blob-3 { background: radial-gradient(circle, #7000ff 0%, transparent 65%); top: 40%; left: 20%; animation: moveBlob3 20s infinite alternate ease-in-out; }
+        
+        @keyframes moveBlob1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(120px, 80px) scale(1.1); } }
+        @keyframes moveBlob2 { 0% { transform: translate(0, 0) scale(1.05); } 100% { transform: translate(-100px, -90px) scale(0.95); } }
+        @keyframes moveBlob3 { 0% { transform: translate(0, 0) scale(0.95); } 100% { transform: translate(80px, -60px) scale(1.1); } }
+
+        .font-bubble { font-family: 'Fredoka', sans-serif; }
+        .font-poster { font-family: 'Oswald', sans-serif; }
+
+        /* Kính mờ Dark Mode cao cấp */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #canvas-fx {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 99;
+        }
+
+        @keyframes owlJump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px) scale(1.05); } }
+        .owl-jump { animation: owlJump 0.4s ease-in-out 2; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased pb-32 tracking-wide selection:bg-indigo-500/30">
+
+    <!-- Nền cực quang sinh động & Canvas Pháo hoa -->
+    <div class="aurora-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <canvas id="canvas-fx"></canvas>
+
+    <!-- Header lớp học -->
+    <header class="max-w-4xl mx-auto pt-8 px-4 flex flex-col items-center relative z-10">
+        <div class="font-poster flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900/80 text-white font-medium text-xs md:text-sm tracking-widest uppercase shadow-2xl border border-white/10 text-center">
+            ✨ HỆ THỐNG LUYỆN THI CHẤT LƯỢNG CAO - MS. LÊ HẰNG ENGLISH ✨
+        </div>
+        <h1 class="font-bubble text-3xl md:text-5xl font-bold text-center mt-6 tracking-wide bg-gradient-to-r from-indigo-300 via-cyan-200 to-purple-300 bg-clip-text text-transparent drop-shadow-sm">
+            Pronunciation & Primary Stress Quiz
+        </h1>
+    </header>
+
+    <!-- Navigation chuyển đổi bộ bài tập -->
+    <nav class="max-w-4xl mx-auto px-4 mt-8 relative z-10">
+        <div class="font-poster p-1.5 bg-slate-950/60 backdrop-blur-md border border-white/5 rounded-2xl grid grid-cols-2 gap-2 shadow-xl">
+            <button onclick="switchTabSection('ex1')" id="tab-ex1" class="py-3 text-xs md:text-sm font-semibold text-center rounded-xl transition-all option-btn bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] border border-indigo-400/30">
+                🗣️ EXERCISE 1: PRONUNCIATION
+            </button>
+            <button onclick="switchTabSection('ex2')" id="tab-ex2" class="py-3 text-xs md:text-sm font-semibold text-center rounded-xl transition-all option-btn text-slate-400 hover:text-slate-200 hover:bg-white/5">
+                ⚡ EXERCISE 2: PRIMARY STRESS
+            </button>
+        </div>
+    </nav>
+
+    <!-- Khung nội dung chính -->
+    <main class="max-w-4xl mx-auto px-4 mt-6 relative z-10">
+        <div class="glass-panel p-6 md:p-10 shadow-2xl">
+            <div class="mb-6 flex items-start gap-4 bg-slate-900/40 p-4 rounded-2xl border border-white/5">
+                <span id="title-icon" class="text-2xl p-2 bg-slate-950 rounded-xl text-indigo-400 shrink-0 border border-white/5">🗣️</span>
+                <h2 id="exercise-headline" class="font-bubble text-slate-200 font-medium text-sm md:text-base leading-relaxed pt-1">
+                    Exercise 1: Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation in each of the following questions.
+                </h2>
+            </div>
+            
+            <div class="h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8"></div>
+
+            <!-- Khu vực tải tự động câu hỏi -->
+            <div id="quiz-render-area" class="space-y-8"></div>
+        </div>
+    </main>
+
+    <!-- Bạn Cú Mascot tương tác -->
+    <div class="fixed bottom-24 right-4 md:right-8 z-40 flex flex-col items-center pointer-events-none select-none">
+        <div id="owl-speech" class="font-bubble bg-slate-900/95 backdrop-blur-md border border-slate-700 text-white text-xs font-medium px-4 py-2.5 rounded-2xl shadow-xl mb-2 max-w-[150px] text-center transition-all duration-300">
+            Thử sức với bộ câu hỏi siêu hay vừa cập nhật nào con! 🦉🔥
+        </div>
+        <div id="owl-body" class="text-5xl md:text-6xl pointer-events-auto cursor-pointer filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-transform active:scale-95" onclick="interactMascot()">🦉</div>
+    </div>
+
+    <!-- Thanh Footer chấm điểm cố định -->
+    <div class="font-poster fixed bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur-xl border-t border-white/10 py-3.5 px-6 flex justify-between items-center shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-50">
+        <div class="text-slate-300 font-medium text-xs md:text-sm flex items-center gap-2 bg-slate-900/80 px-4 py-2 rounded-xl border border-white/5 shadow-inner">
+            🏆 <span class="text-slate-400">ĐIỂM SỐ CỦA CON:</span> <span id="live-score-text" class="text-2xl font-black text-amber-400 drop-shadow-md">0</span>
+        </div>
+        <button onclick="submitExamAlert()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 active:scale-95 text-white font-semibold px-6 py-2.5 rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all text-xs md:text-sm tracking-wider uppercase border border-purple-400/20">
+            Nộp Bài & Kết Quả 🚀
+        </button>
+    </div>
+
+    <script>
+        // --- HỆ THỐNG HIỆU ỨNG PHÁO HOA HẠT (CANVAS CONFETTI) ---
+        const canvas = document.getElementById('canvas-fx');
+        const ctx = canvas.getContext('2d');
+        let fxParticles = [];
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class ConfettiParticle {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.size = Math.random() * 6 + 4;
+                this.speedX = Math.random() * 8 - 4;
+                this.speedY = Math.random() * -8 - 3;
+                this.gravity = 0.25;
+                this.color = `hsl(${Math.random() * 360}, 100%, 65%)`;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX; this.y += this.speedY;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function createConfettiExplosion(x, y) {
+            for (let i = 0; i < 35; i++) fxParticles.push(new ConfettiParticle(x, y));
+        }
+
+        function renderFxLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = fxParticles.length - 1; i >= 0; i--) {
+                fxParticles[i].update();
+                if (fxParticles[i].alpha <= 0) { fxParticles.splice(i, 1); } 
+                else { fxParticles[i].draw(); }
+            }
+            requestAnimationFrame(renderFxLoop);
+        }
+        renderFxLoop();
+
+
+        // --- HỆ THỐNG PHẢN HỒI ÂM THANH SỐ HÓA (WEB AUDIO API) ---
+        let audioContext = null;
+        function initAudioEngine() { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
+
+        function playSoundFeedback(isCorrect) {
+            initAudioEngine();
+            if (!audioContext) return;
+
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+
+            if (isCorrect) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                osc.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                osc.start(); osc.stop(audioContext.currentTime + 0.3);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220.00, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.06, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.25);
+                osc.start(); osc.stop(audioContext.currentTime + 0.25);
+            }
+        }
+
+
+        // --- KHO DỮ LIỆU BÀI TẬP MỚI ---
+        const dataset = {
+            ex1: [
+                { id: 1, label: "1", question: "A. ans<u>w</u>er &nbsp;&nbsp; B. <u>w</u>rong &nbsp;&nbsp; C. <u>w</u>ay &nbsp;&nbsp; D. yello<u>w</u>", choices: { A: "answer", B: "wrong", C: "way", D: "yellow" }, correct: "C", explain: "👉 Trong từ <strong class='text-white'>way</strong>, âm 'w' được phát âm rõ ràng thành bán nguyên âm <strong class='text-amber-300'>/w/</strong>.<br>👉 Ở các từ còn lại, chữ 'w' hoàn toàn là <strong>âm câm</strong> (silent letter)." },
+                { id: 2, label: "2", question: "A. m<u>y</u>stery &nbsp;&nbsp; B. suppl<u>y</u> &nbsp;&nbsp; C. eas<u>y</u> &nbsp;&nbsp; D. sill<u>y</u>", choices: { A: "mystery", B: "supply", C: "easy", D: "silly" }, correct: "B", explain: "👉 Chữ 'y' trong từ <strong class='text-white'>supply</strong> phát âm thành nguyên âm đôi <strong class='text-amber-300'>/aɪ/</strong> (/səˈplaɪ/).<br>👉 Các từ còn lại phát âm thành âm đơn ngắn <strong class='text-amber-300'>/ɪ/</strong> hoặc <strong class='text-amber-300'>/i/</strong>." },
+                { id: 3, label: "3", question: "A. <u>y</u>outh &nbsp;&nbsp; B. pra<u>y</u>er &nbsp;&nbsp; C. <u>y</u>ard &nbsp;&nbsp; D. <u>y</u>early", choices: { A: "youth", B: "prayer", C: "yard", D: "yearly" }, correct: "B", explain: "👉 Chữ 'y' trong <strong class='text-white'>prayer</strong> đóng vai trò tạo nên nguyên âm đôi /eə/ (/prcor/), hoàn toàn <strong>không chứa phụ âm /j/</strong>.<br>👉 Các từ còn lại đều bắt đầu bằng phụ âm mạnh <strong class='text-amber-300'>/j/</strong>." },
+                { id: 4, label: "4", question: "A. a<u>w</u>ard &nbsp;&nbsp; B. <u>w</u>orld &nbsp;&nbsp; C. house<u>w</u>ork &nbsp;&nbsp; D. <u>w</u>hose", choices: { A: "award", B: "world", C: "housework", D: "whose" }, correct: "D", explain: "👉 Từ <strong class='text-white'>whose</strong> có chữ 'w' bị biến thành <strong>âm câm</strong>, phát âm là /huːz/.<br>👉 Các đáp án còn lại đều được phát âm thành phụ âm <strong class='text-amber-300'>/w/</strong>." },
+                { id: 5, label: "5", question: "A. <u>w</u>hether &nbsp;&nbsp; B. play<u>w</u>right &nbsp;&nbsp; C. kno<u>w</u>ledge &nbsp;&nbsp; D. <u>w</u>rap", choices: { A: "whether", B: "playwright", C: "knowledge", D: "wrap" }, correct: "A", explain: "👉 Từ <strong class='text-white'>whether</strong> phát âm phụ âm đầu là <strong class='text-amber-300'>/w/</strong>.<br>👉 Trong khi ở <em>playwright</em> (gốc 'write'), <em>knowledge</em> (gốc 'low'), và <em>wrap</em> (cụm 'wr-'), chữ 'w' đều là <strong>âm câm</strong>." },
+                { id: 6, label: "6", question: "A. <u>u</u>niversity &nbsp;&nbsp; B. <u>u</u>nique &nbsp;&nbsp; C. <u>u</u>nit &nbsp;&nbsp; D. <u>u</u>ndo", choices: { A: "university", B: "unique", C: "unit", D: "undo" }, correct: "D", explain: "👉 Tiền tố 'un-' trong từ <strong class='text-white'>undo</strong> phát âm là âm ngắn <strong class='text-amber-300'>/ʌ/</strong> (/ʌnˈduː/).<br>👉 Ba từ còn lại chữ 'u' đều được phát âm thành âm đôi <strong class='text-amber-300'>/juː/</strong>." },
+                { id: 7, label: "7", question: "A. gr<u>ou</u>nd &nbsp;&nbsp; B. sh<u>ou</u>ld &nbsp;&nbsp; C. ab<u>ou</u>t &nbsp;&nbsp; D. am<u>ou</u>nt", choices: { A: "ground", B: "should", C: "about", D: "amount" }, correct: "B", explain: "👉 Tổ hợp 'ou' trong từ khiếm khuyết <strong class='text-white'>should</strong> phát âm ngắn thành <strong class='text-amber-300'>/ʊ/</strong> (/ʃʊd/).<br>👉 Các đáp án còn lại phát âm thành vần <strong class='text-amber-300'>/aʊ/</strong>." },
+                { id: 8, label: "8", question: "A. w<u>ea</u>ther &nbsp;&nbsp; B. br<u>ea</u>d &nbsp;&nbsp; C. ah<u>ea</u>d &nbsp;&nbsp; D. m<u>ea</u>n", choices: { A: "weather", B: "bread", C: "ahead", D: "mean" }, correct: "D", explain: "👉 Nguyên âm đôi 'ea' ở từ <strong class='text-white'>mean</strong> kéo dài thành <strong class='text-amber-300'>/iː/</strong> (/miːn/).<br>👉 Các từ còn lại phát âm ngắn thành âm <strong class='text-amber-300'>/e/</strong>." },
+                { id: 9, label: "9", question: "A. au<u>th</u>or &nbsp;&nbsp; B. o<u>th</u>er &nbsp;&nbsp; C. <u>th</u>ere &nbsp;&nbsp; D. brea<u>th</u>e", choices: { A: "author", B: "other", C: "there", D: "breathe" }, correct: "A", explain: "👉 Âm 'th' trong từ <strong class='text-white'>author</strong> là âm vô thanh <strong class='text-amber-300'>/θ/</strong> (/ˈɔː.θər/).<br>👉 Các từ còn lại phát âm thành âm hữu thanh <strong class='text-amber-300'>/ð/</strong>." },
+                { id: 10, label: "10", question: "A. excurs<u>io</u>n &nbsp;&nbsp; B. sunb<u>ur</u>st &nbsp;&nbsp; C. n<u>ur</u>se &nbsp;&nbsp; D. pict<u>ur</u>e", choices: { A: "excursion", B: "sunburst", C: "nurse", D: "picture" }, correct: "D", explain: "👉 Đuôi của từ <strong class='text-white'>picture</strong> phát âm nhẹ thành âm nhẹ ghép <strong class='text-amber-300'>/tʃər/</strong> (/ˈpɪk.tʃər/).<br>👉 Phần gạch chân ở các từ còn lại đều tạo nên âm dài <strong class='text-amber-300'>/ɜː/</strong>." }
+            ],
+            ex2: [
+                { id: 1, label: "1", question: "A. trainer &nbsp;&nbsp;&nbsp; B. exam &nbsp;&nbsp;&nbsp; C. moment &nbsp;&nbsp;&nbsp; D. army", choices: { A: "trainer", B: "exam", C: "moment", D: "army" }, correct: "B", explain: "👉 Từ <strong class='text-white'>exam</strong> có trọng âm rơi vào âm tiết thứ <strong class='text-amber-300'>2</strong> (/ɪɡˈzæm/).<br>👉 Các từ còn lại đều có trọng âm rơi vào âm tiết thứ <strong class='text-amber-300'>1</strong>." },
+                { id: 2, label: "2", question: "A. visit &nbsp;&nbsp;&nbsp; B. explore &nbsp;&nbsp;&nbsp; C. amaze &nbsp;&nbsp;&nbsp; D. attend", choices: { A: "visit", B: "explore", C: "amaze", D: "attend" }, correct: "A", explain: "👉 Động từ đặc biệt ngắn <strong class='text-white'>visit</strong> nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>1</strong> (/ˈvɪz.ɪt/).<br>👉 Các động từ còn lại đều nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>2</strong>." },
+                { id: 3, label: "3", question: "A. unpleasant &nbsp;&nbsp;&nbsp; B. embarrassed &nbsp;&nbsp;&nbsp; C. different &nbsp;&nbsp;&nbsp; D. amazing", choices: { A: "unpleasant", B: "embarrassed", C: "different", D: "amazing" }, correct: "C", explain: "👉 Tính từ <strong class='text-white'>different</strong> nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>1</strong> (/ˈdɪf.ər.ənt/).<br>👉 Các tính từ còn lại đều có trọng âm nhấn ở âm tiết thứ <strong class='text-amber-300'>2</strong>." },
+                { id: 4, label: "4", question: "A. billiard &nbsp;&nbsp;&nbsp; B. performance &nbsp;&nbsp;&nbsp; C. confidence &nbsp;&nbsp;&nbsp; D. everything", choices: { A: "billiard", B: "performance", C: "confidence", D: "everything" }, correct: "B", explain: "👉 Danh từ <strong class='text-white'>performance</strong> nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>2</strong> (/pəˈfɔː.məns/).<br>👉 Các đáp án còn lại có trọng âm chính rơi vào âm tiết thứ <strong class='text-amber-300'>1</strong>." },
+                { id: 5, label: "5", question: "A. experience &nbsp;&nbsp;&nbsp; B. magnificent &nbsp;&nbsp;&nbsp; C. exhilarate &nbsp;&nbsp;&nbsp; D. exploration", choices: { A: "experience", B: "magnificent", C: "exhilarate", D: "exploration" }, correct: "D", explain: "👉 Từ có đuôi '-tion' là <strong class='text-white'>exploration</strong> nhấn trọng âm ngay trước nó, tức âm tiết thứ <strong class='text-amber-300'>3</strong> (/ˌek.spləˈreɪ.ʃən/).<br>👉 Các từ còn lại đều nhấn ở âm tiết thứ <strong class='text-amber-300'>2</strong>." },
+                { id: 6, label: "6", question: "A. appreciate &nbsp;&nbsp;&nbsp; B. experience &nbsp;&nbsp;&nbsp; C. embarrassing &nbsp;&nbsp;&nbsp; D. situation", choices: { A: "appreciate", B: "experience", C: "embarrassing", D: "situation" }, correct: "D", explain: "👉 Từ dài <strong class='text-white'>situation</strong> nhấn trọng âm rơi vào âm tiết thứ <strong class='text-amber-300'>3</strong> (/ˌsɪtʃ.uˈeɪ.ʃən/).<br>👉 Các từ phức tạp còn lại đều nhấn ở âm tiết thứ <strong class='text-amber-300'>2</strong>." },
+                { id: 7, label: "7", question: "A. excited &nbsp;&nbsp;&nbsp; B. interested &nbsp;&nbsp;&nbsp; C. confident &nbsp;&nbsp;&nbsp; D. memorable", choices: { A: "excited", B: "interested", C: "confident", D: "memorable" }, correct: "A", explain: "👉 Tính từ trạng thái <strong class='text-white'>excited</strong> nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>2</strong> (/ɪkˈsaɪ.tɪd/).<br>👉 Ba tính từ còn lại đều nhấn trọng âm rơi vào âm tiết thứ <strong class='text-amber-300'>1</strong>." },
+                { id: 8, label: "8", question: "A. convenient &nbsp;&nbsp;&nbsp; B. interesting &nbsp;&nbsp;&nbsp; C. comfortable &nbsp;&nbsp;&nbsp; D. internet", choices: { A: "convenient", B: "interesting", C: "comfortable", D: "internet" }, correct: "A", explain: "👉 Tính từ <strong class='text-white'>convenient</strong> nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>2</strong> (/kənˈviː.ni.ənt/).<br>👉 Các đáp án còn lại đều nhấn ở âm tiết thứ <strong class='text-amber-300'>1</strong> (Lưu ý: <em>interesting</em> nhấn âm 1)." },
+                { id: 9, label: "9", question: "A. entertain &nbsp;&nbsp;&nbsp; B. electronic &nbsp;&nbsp;&nbsp; C. documentary &nbsp;&nbsp;&nbsp; D. television", choices: { A: "entertain", B: "electronic", C: "documentary", D: "television" }, correct: "D", explain: "👉 Danh từ quen thuộc <strong class='text-white'>television</strong> nhấn trọng âm chính xác ở âm tiết đầu tiên tức âm tiết thứ <strong class='text-amber-300'>1</strong> (/ˈtel.ɪ.vɪʒ.ən/).<br>👉 Các từ dài còn lại đều có trọng âm rơi vào âm tiết thứ <strong class='text-amber-300'>3</strong>." },
+                { id: 10, label: "10", question: "A. invent &nbsp;&nbsp;&nbsp; B. interact &nbsp;&nbsp;&nbsp; C. develop &nbsp;&nbsp;&nbsp; D. control", choices: { A: "invent", B: "interact", C: "develop", D: "control" }, correct: "B", explain: "👉 Động từ ghép từ tố <strong class='text-white'>interact</strong> nhấn trọng âm chính ở âm tiết cuối cùng tức âm tiết thứ <strong class='text-amber-300'>3</strong> (/ˌɪn.təˈrækt/).<br>👉 Các động từ còn lại đều nhấn trọng âm ở âm tiết thứ <strong class='text-amber-300'>2</strong>." }
+            ]
+        };
+
+        let currentActiveSection = 'ex1';
+        let totalLiveScore = 0;
+        let progressRecords = { ex1: {}, ex2: {} };
+
+        const textCorrectOwl = ["Siêu cấp chuẩn xác! 🎉", "Làm tốt lắm con yêu! 🌟", "Đỉnh cấp, giữ phong độ nha! 🔥", "Rất tốt, cô tự hào về con! ✨"];
+        const textWrongOwl = ["Ui gần đúng rồi, đọc lại giải thích nha! 💪", "Hãy chú ý kỹ lý thuyết nhé con! 🌱", "Không sao cả, câu sau sẽ phục thù! 🚀"];
+
+        function triggerMascotAnimation(isCorrect) {
+            const owl = document.getElementById('owl-body');
+            const bubble = document.getElementById('owl-speech');
+            
+            owl.className = "owl-jump text-5xl md:text-6xl pointer-events-auto cursor-pointer filter drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]";
+            
+            if (isCorrect) {
+                bubble.innerText = textCorrectOwl[Math.floor(Math.random() * textCorrectOwl.length)];
+            } else {
+                bubble.innerText = textWrongOwl[Math.floor(Math.random() * textWrongOwl.length)];
+            }
+
+            setTimeout(() => {
+                owl.className = "text-5xl md:text-6xl pointer-events-auto cursor-pointer filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]";
+            }, 900);
+        }
+
+        function interactMascot() {
+            document.getElementById('owl-speech').innerText = "Học chăm chỉ sẽ đạt điểm cao tuyệt đối nha! 🦉💖";
+        }
+
+        function switchTabSection(sectionKey) {
+            currentActiveSection = sectionKey;
+            
+            const tab1 = document.getElementById('tab-ex1');
+            const tab2 = document.getElementById('tab-ex2');
+            const headline = document.getElementById('exercise-headline');
+            const icon = document.getElementById('title-icon');
+
+            if (sectionKey === 'ex1') {
+                tab1.className = "py-3 text-xs md:text-sm font-semibold text-center rounded-xl transition-all option-btn bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] border border-indigo-400/30";
+                tab2.className = "py-3 text-xs md:text-sm font-semibold text-center rounded-xl transition-all option-btn text-slate-400 hover:text-slate-200 hover:bg-white/5";
+                headline.innerText = "Exercise 1: Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation in each of the following questions.";
+                icon.innerText = "🗣️";
+            } else {
+                tab2.className = "py-3 text-xs md:text-sm font-semibold text-center rounded-xl transition-all option-btn bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] border border-indigo-400/30";
+                tab1.className = "py-3 text-xs md:text-sm font-semibold text-center rounded-xl transition-all option-btn text-slate-400 hover:text-slate-200 hover:bg-white/5";
+                headline.innerText = "Exercise 2: Mark the letter A, B, C, or D to indicate the word that differs from the other three in the position of primary stress in each of the following questions.";
+                icon.innerText = "⚡";
+            }
+
+            renderQuizCoreArea();
+        }
+
+        function renderQuizCoreArea() {
+            const container = document.getElementById('quiz-render-area');
+            container.innerHTML = '';
+
+            const items = dataset[currentActiveSection];
+
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "pb-8 border-b border-white/5 last:border-none";
+
+                const questionTopBar = document.createElement('div');
+                questionTopBar.className = "flex items-start gap-3 mb-4";
+                questionTopBar.innerHTML = `
+                    <span class="font-poster bg-indigo-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shrink-0 mt-0.5 shadow-md">CÂU ${item.label}</span>
+                    <span class="font-bubble font-medium text-slate-100 text-base md:text-lg leading-relaxed">${item.question}</span>
+                `;
+                card.appendChild(questionTopBar);
+
+                const gridOptions = document.createElement('div');
+                gridOptions.className = "font-poster grid grid-cols-1 md:grid-cols-2 gap-3";
+
+                const history = progressRecords[currentActiveSection][index];
+
+                Object.entries(item.choices).forEach(([key, value]) => {
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex items-center justify-between p-4 bg-slate-900/40 border border-slate-700 rounded-xl text-left text-slate-300 hover:bg-slate-800 hover:border-indigo-400 active:scale-[0.99] cursor-pointer shadow-sm text-sm md:text-base";
+                    
+                    let indicatorCircle = `<span class="w-5 h-5 rounded-full border border-slate-500 bg-slate-950/50 shrink-0"></span>`;
+
+                    if (history) {
+                        btn.disabled = true;
+                        if (key === item.correct) {
+                            btn.className = "option-btn flex items-center justify-between p-4 bg-emerald-900/40 border border-emerald-500/80 text-left font-medium text-emerald-300 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.15)] text-sm md:text-base";
+                            indicatorCircle = `<span class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 text-xs font-bold shrink-0">✓</span>`;
+                        } else if (history.chosen === key) {
+                            btn.className = "option-btn flex items-center justify-between p-4 bg-rose-900/40 border border-rose-500/80 text-left font-medium text-rose-300 rounded-xl shadow-[0_0_15px_rgba(244,63,94,0.15)] text-sm md:text-base";
+                            indicatorCircle = `<span class="w-5 h-5 rounded-full bg-rose-500 flex items-center justify-center text-white text-[10px] font-bold shrink-0">✕</span>`;
+                        } else {
+                            btn.className = "option-btn flex items-center justify-between p-4 bg-slate-900/10 border border-slate-800 opacity-40 text-left text-slate-600 rounded-xl pointer-events-none text-sm md:text-base";
+                            indicatorCircle = `<span class="w-5 h-5 rounded-full border border-slate-800 bg-transparent shrink-0"></span>`;
+                        }
+                    } else {
+                        btn.onclick = (e) => handleSelection(index, key, e);
+                    }
+
+                    btn.innerHTML = `<span><strong class="${history && (key === item.correct || history.chosen === key) ? 'text-white' : 'text-indigo-400'} font-medium mr-1.5">${key}.</strong> ${value}</span> ${indicatorCircle}`;
+                    gridOptions.appendChild(btn);
+                });
+
+                card.appendChild(gridOptions);
+
+                if (history) {
+                    const expContainer = document.createElement('div');
+                    expContainer.className = "mt-4 p-4 bg-indigo-950/30 border border-indigo-500/10 rounded-2xl text-slate-300 font-sans shadow-inner backdrop-blur-sm";
+                    expContainer.innerHTML = `
+                        <div class="font-poster flex items-center gap-1.5 font-semibold text-indigo-300 uppercase text-xs mb-1.5 tracking-wider">
+                            <span>💡</span> LỜI GIẢI TỪ CÔ LÊ HẰNG:
+                        </div>
+                        <div class="text-slate-300 text-sm leading-relaxed pl-3 border-l-2 border-indigo-500/50">
+                            ${item.explain}
+                        </div>
+                    `;
+                    card.appendChild(expContainer);
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        function handleSelection(index, selectedKey, event) {
+            if (progressRecords[currentActiveSection][index]) return;
+
+            const targetQuestion = dataset[currentActiveSection][index];
+            const checkSuccess = (selectedKey === targetQuestion.correct);
+
+            if (checkSuccess) {
+                totalLiveScore += 10;
+                if (event) { createConfettiExplosion(event.clientX, event.clientY); }
+            }
+
+            progressRecords[currentActiveSection][index] = { chosen: selectedKey, status: checkSuccess };
+            document.getElementById('live-score-text').innerText = totalLiveScore;
+            
+            playSoundFeedback(checkSuccess);
+            triggerMascotAnimation(checkSuccess);
+            renderQuizCoreArea();
+        }
+
+        function submitExamAlert() {
+            alert(`🎉 Hoàn thành bài tập xuất sắc rồi con yêu!\n🏆 Tổng số điểm ghi nhận: ${totalLiveScore} điểm. Khoe ngay kết quả đạt được với cô nhé!`);
+        }
+
+        window.onload = () => { renderQuizCoreArea(); };
+    </script>
+</body>
+</html>
